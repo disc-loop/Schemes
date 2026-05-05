@@ -95,3 +95,4 @@
 ;          ((< B 5) (func A (+ B 1)))
 ;          (else (func 1 B))))) 
 
+(length (1 2 3))
