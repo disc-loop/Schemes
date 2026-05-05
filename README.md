@@ -1,1 +1,4 @@
-This repo contains my attempts at working through the exercises in The Little Schemer, a fun little book by Friedman and Felleisen.
+Scheme code written while reading through some cool scheme books:
+- Structure and Interpretation of Computer Programs
+- The Little Schemer
+- The Seasoned Schemer
