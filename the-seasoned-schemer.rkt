@@ -5,13 +5,13 @@
 ;; Starts with these, but then revises them
 
 ;; (define is-first?
-;;   (λ (a lat)
+;;   (lambda (a lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else (eq? a (car lat))))))
 
 ;; (define two-in-a-row?
-;;   (λ (lat)
+;;   (lambda (lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else
@@ -20,14 +20,14 @@
 ;;           (two-in-a-row? (cdr lat)))))))
 
 ;; (define two-in-a-row?
-;;   (λ (lat)
+;;   (lambda (lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else
 ;;         (is-first-b? (car lat) (cdr lat))))))
 
 ;; (define is-first-b?
-;;   (λ (a lat)
+;;   (lambda (a lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else
@@ -36,7 +36,7 @@
 ;;           (two-in-a-row? lat))))))
 
 ;; (define two-in-a-row-b?
-;;   (λ (preceding lat)
+;;   (lambda (preceding lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else
@@ -45,7 +45,7 @@
 ;;           (two-in-a-row-b? (car lat) (cdr lat)))))))
 
 ;; (define two-in-a-row?
-;;   (λ (lat)
+;;   (lambda (lat)
 ;;     (cond
 ;;       ((null? lat) #f)
 ;;       (else
@@ -60,11 +60,11 @@
 ;; going to be more like the previous example where the responsibilities were
 ;; more split up.
 ;; (define sum-of-prefixes
-;;   (λ (tup)
+;;   (lambda (tup)
 ;;     (sum-of-prefixes-b 0 tup)))
 
 ;; (define sum-of-prefixes-b
-;;   (λ (sonssf tup)
+;;   (lambda (sonssf tup)
 ;;     (cond
 ;;       ((null? tup) '())
 ;;       (else
@@ -77,14 +77,14 @@
 ;; Anyway, here's my version. I think it's easier to comprehend, though
 ;; the additional null check is a bit more awkward.
 ;; (define sum-of-prefixes
-;;   (λ (tup)
+;;   (lambda (tup)
 ;;     (cond
 ;;       ((null? tup) '())
 ;;       (else
 ;;         (running-total (car tup) tup)))))
 
 ;; (define running-total
-;;   (λ (total remaining)
+;;   (lambda (total remaining)
 ;;     (cond
 ;;       ((null? remaining) '())
 ;;       (else
@@ -98,7 +98,7 @@
 ;; (sum-of-prefixes '(1 1 1 1 1))
 
 (define pick
-  (λ (n lat)
+  (lambda (n lat)
     (cond
       ((eq? n 1) (car lat))
       (else
@@ -108,11 +108,11 @@
 
 ;; Some monstrous function they cooked up.
 (define scramble
-  (λ (tup)
+  (lambda (tup)
     (scramble-b tup '())))
 
 (define scramble-b
-  (λ (tup rev-pre)
+  (lambda (tup rev-pre)
     (cond
       ((null? tup) '())
       (else
@@ -124,4 +124,13 @@
           (scramble-b (cdr tup)
             (cons (car tup) rev-pre)))))))
 
-(scramble '())
+(define multirember
+  (lambda (a lat)
+    (letrec
+      ((mr (lambda (lat)
+        (cond 
+	  ((null? lat) '())
+	  ((eq? a (car lat)) (mr a (cdr lat)))
+          (else
+            (cons (car lat) (mr a (cdr lat))))))))
+      (mr lat))))
