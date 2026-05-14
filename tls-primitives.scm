@@ -1,6 +1,5 @@
-#lang racket
-
-(provide atom? lat? add1 sub1)
+(define-module (tls-primitives)
+  #:export (atom? lat? add1 sub1))
 
 (define atom?
   (λ (x)

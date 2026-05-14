@@ -1,6 +1,4 @@
-#lang racket
-
-(require "tls-primitives.rkt")
+(use-modules (tls-primitives))
 
 ;; Starts with these, but then revises them
 
@@ -125,12 +123,14 @@
             (cons (car tup) rev-pre)))))))
 
 (define multirember
-  (lambda (a lat)
+  (lambda (a lat-outer)
     (letrec
       ((mr (lambda (lat)
         (cond 
-	  ((null? lat) '())
-	  ((eq? a (car lat)) (mr a (cdr lat)))
-          (else
-            (cons (car lat) (mr a (cdr lat))))))))
-      (mr lat))))
+					((null? lat) '())
+					((eq? a (car lat)) (mr (cdr lat)))
+	        (else
+		        (cons (car lat) (mr (cdr lat))))))))
+      (mr lat-outer))))
+
+(multirember "foo" '("foo" "bar" "baz"))
