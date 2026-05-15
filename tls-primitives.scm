@@ -1,5 +1,5 @@
 (define-module (tls-primitives)
-  #:export (atom? lat? add1 sub1))
+  #:export (atom? lat? add1 sub1 print))
 
 (define atom?
   (lambda (x)
@@ -18,3 +18,10 @@
 (define sub1
   (lambda (n)
     (- n 1)))
+
+
+;; Not in the book
+(define print
+  (lambda (x)
+    (display x)
+    (newline)))
