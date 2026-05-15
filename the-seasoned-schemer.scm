@@ -127,10 +127,10 @@
     (letrec
       ((mr (lambda (lat)
         (cond 
-					((null? lat) '())
-					((eq? a (car lat)) (mr (cdr lat)))
-	        (else
-		        (cons (car lat) (mr (cdr lat))))))))
+	  ((null? lat) '())
+	  ((eq? a (car lat)) (mr (cdr lat)))
+	  (else (cons (car lat) (mr (cdr lat))))))))
       (mr lat-outer))))
 
-(multirember "foo" '("foo" "bar" "baz"))
+(display (multirember "foo" '("foo" "bar" "baz")))
+(newline)
