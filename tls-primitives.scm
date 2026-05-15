@@ -2,19 +2,19 @@
   #:export (atom? lat? add1 sub1))
 
 (define atom?
-  (λ (x)
+  (lambda (x)
     (and (not (pair? x)) (not (null? x)))))
 
 (define lat?
-  (λ (l)
+  (lambda (l)
     (cond ((null? l) #t)
           ((atom? (car l)) (lat? (cdr l)))
           (else #f))))
 
 (define add1
-  (λ (n)
+  (lambda (n)
     (+ n 1)))
 
 (define sub1
-  (λ (n)
+  (lambda (n)
     (- n 1)))
