@@ -55,10 +55,46 @@
 
 ; (print ((rember-f equal?) '(pop corn) '(lemonade (pop corn) and (cake))))
 
+; The whole section on collectors / continuations is quite confusing. Even now,
+; I find it difficult to understand multirember&co. I think it's because of the
+; closures and backtracking. It's hard to keep track of what col slowly becomes
+; as it builds up through the recursion and this makes it difficult to step 
+; through once it hits the base case. 
+;
+; For instance, here's how it looks with the small example they give:
+; 1. (eq? 'and 'tuna) = #f, so recurse with col as:
+;    (lambda (newlat seen) (a-friend (cons 'and newlat) seen))
+;
+; 2. (eq? 'tuna 'tuna) = #t, so recurse with col as:
+;    (lambda (newlat seen) 
+;      ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
+;        newlat 
+;        (cons 'tuna seen)))
+;
+; 3. Finally, (null? lat) = #t, so we evaluate (col '() '()), which is this (I think):
+;    ((lambda (newlat seen) 
+;       ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
+;         newlat 
+;         (cons 'tuna seen))) 
+;           '() 
+;           '())
+;
+; 3. (cont.) stepping through:
+;    ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
+;      '() 
+;      (cons 'tuna '()))) 
+;
+; 3. (cont.) again:
+;    (a-friend (cons 'and '()) '(tuna))
+;
+; 3. (cont.) finally:
+;    #f
+; 
+; Still, I think I get the general idea, it's just difficult to conceptualise.
 (define multirember&co
   (lambda (a lat col)
     (cond
-      ((null? l) (col '() '()))
+      ((null? lat) (col '() '()))
       ((eq? (car lat) a)
        (multirember&co
          a
@@ -76,4 +112,27 @@
   (lambda (x y)
     (null? y)))
 
-(print (multirember&co 'tuna '(tuna) a-friend))
+(define even?
+  (lambda (n)
+    (= (* (quotient n 2) 2) n)))
+
+; Remove all uneven numbers from the list.
+; Building a list, so base case is null check that returns empty list on null.
+; The list is either null or not null.
+; The first elem of the list is either atomic or a list.
+; If the first elem is atomic, check if even. If it is, construct a new list
+; from it and the natural recursion on the remainder of the list.
+; If the first element isn't even, return the natural recursion on the remander of the list.
+; If the first elem is a list, construct a new list from the recursion using that list with
+; the recursion of the remainder of the list.
+(define evens-only*
+  (lambda (l)
+    (cond
+      ((null? l) '())
+      ((atom? (car l)) 
+       (cond
+         ((even? (car l)) (cons (car l) (evens-only* (cdr l))))
+         (else (evens-only* (cdr l)))))
+      (else (cons (evens-only* (car l)) (evens-only* (cdr l)))))))
+
+(print (evens-only* '((9 1 2 8) 3 10 ((9 9) 7 6) 2)))
