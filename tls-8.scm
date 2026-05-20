@@ -31,12 +31,12 @@
 ; If list is null, return null list
 ; If first elem in the list matches the member to remove: return the remainder of the list.
 ; Else, return a new list constructed from the first element and the natural recursion of rember-f.
-(define rember-f
-  (lambda (same? a l)
-    (cond
-      ((null? l) '())
-      ((same? (car l) a) (cdr l))
-      (else (cons (car l) (rember-f same? a (cdr l)))))))
+; (define rember-f
+;   (lambda (same? a l)
+;     (cond
+;       ((null? l) '())
+;       ((same? (car l) a) (cdr l))
+;       (else (cons (car l) (rember-f same? a (cdr l)))))))
 
 ; (print (rember-f equal? '(pop corn) '(lemonade (pop corn) and (cake))))
 
@@ -108,6 +108,8 @@
           (lambda (newlat seen)
             (col (cons (car lat) newlat) seen)))))))
 
+; In the context of the example above, this could probably be renamed to
+; none-removed?
 (define a-friend
   (lambda (x y)
     (null? y)))
@@ -136,3 +138,15 @@
       (else (cons (evens-only* (car l)) (evens-only* (cdr l)))))))
 
 (print (evens-only* '((9 1 2 8) 3 10 ((9 9) 7 6) 2)))
+
+; The next function they work through is just too much to write out.
+; Anyway, I think they've made their point. You can "collect" values
+; in the body of functions as you recurse. Then, once you reach the
+; base case, you apply the supplied function to the result of the
+; application of all the collected functions. 
+; 
+; There seem to be some big drawbacks to this approach, namely 1)
+; generating a massive call stack, and 2) difficulty in understanding
+; the final application of those functions. I think a better approach
+; would be to just define additional params for the main function which
+; allow for the collected values to be passed throughout the recursion.
