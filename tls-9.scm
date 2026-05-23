@@ -52,3 +52,26 @@
 		(build (first (first pair))
 			(build (second (first pair))
 				(second pair)))))
+
+; This is the applicative-order Y combinator. I did some reading on why it's
+; called that and turns out this is a modified version of the normal-order
+; Y combinator. The reason there's two is because the normal order variant
+; will never terminate in an applicative-order (eager) language like Scheme,
+; but it works fine in a normal-order (lazy) language like Haskell. Here is
+; the normal order version:
+(define Y
+  (lambda (f)
+    ((lambda (x) (f (x x)))
+     (lambda (x) (f (x x))))))
+
+; This is the applicative-order version, often called the Z combinator:
+(define Z
+  (lambda (f)
+    ((lambda (x) (f (lambda (v) ((x x) v))))
+     (lambda (x) (f (lambda (v) ((x x) v)))))))
+
+; Interestingly, that's different to how they define it in the book:
+(define Y-tls
+  (lambda (f)
+    ((lambda (x) (x x))
+     (lambda (x) (f (lambda (v) ((x x) v)))))))
