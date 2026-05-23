@@ -59,37 +59,37 @@
 ; I find it difficult to understand multirember&co. I think it's because of the
 ; closures and backtracking. It's hard to keep track of what col slowly becomes
 ; as it builds up through the recursion and this makes it difficult to step 
-; through once it hits the base case. 
+; through once it hits the base case.
 ;
 ; For instance, here's how it looks with the small example they give:
 ; 1. (eq? 'and 'tuna) = #f, so recurse with col as:
 ;    (lambda (newlat seen) (a-friend (cons 'and newlat) seen))
 ;
 ; 2. (eq? 'tuna 'tuna) = #t, so recurse with col as:
-;    (lambda (newlat seen) 
-;      ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
-;        newlat 
+;    (lambda (newlat seen)
+;      ((lambda (newlat seen) (a-friend (cons 'and newlat) seen))
+;        newlat
 ;        (cons 'tuna seen)))
 ;
 ; 3. Finally, (null? lat) = #t, so we evaluate (col '() '()), which is this (I think):
-;    ((lambda (newlat seen) 
-;       ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
-;         newlat 
-;         (cons 'tuna seen))) 
-;           '() 
+;    ((lambda (newlat seen)
+;       ((lambda (newlat seen) (a-friend (cons 'and newlat) seen))
+;         newlat
+;         (cons 'tuna seen)))
+;           '()
 ;           '())
 ;
 ; 3. (cont.) stepping through:
-;    ((lambda (newlat seen) (a-friend (cons 'and newlat) seen)) 
-;      '() 
-;      (cons 'tuna '()))) 
+;    ((lambda (newlat seen) (a-friend (cons 'and newlat) seen))
+;      '()
+;      (cons 'tuna '())))
 ;
 ; 3. (cont.) again:
 ;    (a-friend (cons 'and '()) '(tuna))
 ;
 ; 3. (cont.) finally:
 ;    #f
-; 
+;
 ; Still, I think I get the general idea, it's just difficult to conceptualise.
 (define multirember&co
   (lambda (a lat col)
@@ -131,7 +131,7 @@
   (lambda (l)
     (cond
       ((null? l) '())
-      ((atom? (car l)) 
+      ((atom? (car l))
        (cond
          ((even? (car l)) (cons (car l) (evens-only* (cdr l))))
          (else (evens-only* (cdr l)))))
