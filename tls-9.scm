@@ -58,8 +58,8 @@
 ; Y combinator. The reason there's two is because the normal order variant
 ; will never terminate in an applicative-order (eager) language like Scheme,
 ; but it works fine in a normal-order (lazy) language like Haskell. Here is
-; the normal order version (I think this only works for functions with 0 
-; args though):
+; the normal order version (I think this particular example only works for
+; functions with 0 args though):
 (define Y
   (lambda (f)
     ((lambda (x) (f (x x)))
@@ -86,8 +86,8 @@
 (define EZ
 	(lambda (special)
 		((lambda (again) (again again))
-		 (lambda (this-function-again) 
-		   (special (lambda (arg) ((this-function-again this-function-again) arg)))))))
+		 (lambda (this-again)
+		   (special (lambda (arg) ((this-again this-again) arg)))))))
 
 (define special-factorial
 	(lambda (factorial)
@@ -97,3 +97,18 @@
 	  			(* n (factorial (- n 1)))))))
 
 (print ((EZ special-factorial) 3))
+
+; And here's a worked example. First, let's look at the body of EZ:
+(lambda (special)
+  ((lambda (again) (again again))
+   (lambda (this-again) (special (lambda (arg) ((this-again this-again) arg))))))
+
+; Let's apply the first function to the second. That becomes this:
+(lambda (special)
+  ((lambda (this-again) (special (lambda (arg) ((this-again this-again) arg))))
+   (lambda (this-again) (special (lambda (arg) ((this-again this-again) arg))))))
+
+; From there, you can see that the second function is fed into the first one
+; and that reproduces the exact same structure. However, the loop gets
+; suspended in the lambda expression passed to special. It's only once that
+; function is called within special that the loop continues.
