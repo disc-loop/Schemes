@@ -22,7 +22,7 @@
   (lambda (a lat)
 	  (keep-looking a (pick 1 lat) lat)))
 
-(print (looking 'caviar '(6 2 4 caviar 5 7 3)))
+;(print (looking 'caviar '(6 2 4 caviar 5 7 3)))
 
 ; The most partial function with the most unnatural recursion possible, as none
 ; of its inputs map to any values and no subsets of the list are ever 
@@ -58,20 +58,42 @@
 ; Y combinator. The reason there's two is because the normal order variant
 ; will never terminate in an applicative-order (eager) language like Scheme,
 ; but it works fine in a normal-order (lazy) language like Haskell. Here is
-; the normal order version:
+; the normal order version (I think this only works for functions with 0 
+; args though):
 (define Y
   (lambda (f)
     ((lambda (x) (f (x x)))
      (lambda (x) (f (x x))))))
 
-; This is the applicative-order version, often called the Z combinator:
+; This is the applicative-order version, also called the Z combinator (this
+; example takes a function that accepts 1 arg, v):
 (define Z
-  (lambda (f)
-    ((lambda (x) (f (lambda (v) ((x x) v))))
-     (lambda (x) (f (lambda (v) ((x x) v)))))))
-
-; Interestingly, that's different to how they define it in the book:
-(define Y-tls
   (lambda (f)
     ((lambda (x) (x x))
      (lambda (x) (f (lambda (v) ((x x) v)))))))
+
+; I found this difficult to understand. I think part of difficulty comes from
+; Scheme's minimalism - it's hard to know what each variable represents because
+; there's no type identifiers. Without that information, you have to infer what 
+; the function requires for it to work when applied. Relatedly, the other issue 
+; is that the Y/Z combinator will not work for any random function but instead 
+; requires a function of a special form. Thankfully, it's not hard to convert a 
+; regular recursive function into this form, but it is not obvious that it's 
+; required by Z from the definition alone.
+
+; Here's a version of the Z combinator with less cryptic variable names, as well
+; as an example of factorial in the special form:
+(define EZ
+	(lambda (special)
+		((lambda (again) (again again))
+		 (lambda (this-function-again) 
+		   (special (lambda (arg) ((this-function-again this-function-again) arg)))))))
+
+(define special-factorial
+	(lambda (factorial)
+	  (lambda (n)
+	  	(if (<= n 1)
+	  			1
+	  			(* n (factorial (- n 1)))))))
+
+(print ((EZ special-factorial) 3))
